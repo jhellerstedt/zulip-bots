@@ -21,7 +21,7 @@ from splinter import Browser
 import zulip
 
 ups_status_file = '/home/jack/zulip_bots/ups_bot/ups_status.p'
-
+current_pressure_path = '/home/jack/instrument-IO/G80_pressure_logging/current_pressure.p'
 
 ## second python bot to send a message to ups-bot, so its not self-sending
 zulip_config_file = '/home/jack/zulip_bots/ups_bot/python-zuliprc'

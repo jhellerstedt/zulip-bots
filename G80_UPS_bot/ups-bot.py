@@ -19,6 +19,9 @@ import pytz
 ups_status_file = '/home/jack/zulip_bots/ups_bot/ups_status.p'
 # ups_status_file = os.getcwd() + '/ups_status.p'
 
+## hard-coded path to current pressure pickle:
+pressure_status_file = '/home/jack/zulip_bots/G80_UPS_bot/pressure_status.p'
+
 class UPSstatus(object):
     '''
     This bot loads the ups snmp web server and gets the current status values
@@ -39,6 +42,7 @@ class UPSstatus(object):
                 '\n* `@ups-bot subscribe`: receive @ notifications of problems'
                 '\n* `@ups-bot unsubscribe`: stop receiving @ notifications of problems'
                 '\n* `@ups-bot mute <int>`: stop error notifications for <int> minutes; default 30 (no value given)'
+                '\n* `@ups-bot pressure`: returns current pressure values'
                 )
         
         original_content = message['content'].strip()
@@ -47,9 +51,75 @@ class UPSstatus(object):
         if command[0] == 'help' or command[0] == 'Help':
             bot_handler.send_reply(message, HELP_STR)
             return
+        
+        ## pressure reporting    
+        elif command[0] == 'pressure' or command[0] == 'Pressure':
+            with open(pressure_status_file, 'rb') as f:
+                pressure_dict = pickle.load(f)
+            
+            status_message = ''
+            for ii in pressure_dict:
+                status_message = status_message + '\n*' + str(ii) + ': ' + str(pressure_dict[ii]) + ' '
+            
+            bot_handler.send_reply(message, status_message)
+            
+            try:
+                muted = datetime.now() < datetime.strptime(bot_handler.storage.get('unmute_time'), "%Y-%m-%d %H:%M:%S")
+            except:
+                muted = False
+            
+            if pressure_dict['pressure_problem'] is True and muted is False:
+                msg_dict = dict(
+                    type='stream',
+                    to='spm experiments',
+                    subject='pressure status',
+                    content=status_message,
+                )
+                bot_handler.send_message(msg_dict)
+                
+                for subscriber in bot_handler.storage.get('subscribers'):
+                    msg_dict = dict(
+                        type='private',
+                        to=subscriber,
+                        subject='pressure problem',
+                        content=status_message,
+                        )
+                    bot_handler.send_message(msg_dict)
+                
+                bot_handler.storage.put('error_reported', True)
+            
+            ## all clear message, if problem resolves itself
+            try:
+                answer = bot_handler.storage.get('error_reported')
+            except:
+                bot_handler.storage.put('error_reported', False)
+            
+            if ups_status['ups_problem'] is False and bot_handler.storage.get('error_reported') is True:
+                msg_dict = dict(
+                        type='stream',
+                        to='spm experiments',
+                        subject='pressure status',
+                        content=status_message,
+                        )
+                bot_handler.send_message(msg_dict)
+                
+                for subscriber in bot_handler.storage.get('subscribers'):
+                    msg_dict = dict(
+                        type='private',
+                        to=subscriber,
+                        subject='pressure ok',
+                        content=status_message,
+                        )
+                    bot_handler.send_message(msg_dict)
+                    
+                bot_handler.storage.put('error_reported', False)
+                
+            return
+            
             
         
-        elif command[0] == 'status' or command[0] == 'Status':
+        elif command[0] == 'status' or command[0] == 'Status':            
+            ## UPS problems
             with open(ups_status_file, 'rb') as f:
                 ups_status = pickle.load(f)
             
