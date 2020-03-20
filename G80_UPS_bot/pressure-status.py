@@ -106,13 +106,13 @@ while True:
         counter_to_next_alert = 0
         status_ok = False
     
-    if ups_status['pressure_problem'] is True and alert_bot is False:
+    if pressure_status['pressure_problem'] is True and alert_bot is False:
         print(str(dt.now(pytz.timezone('Australia/Melbourne')))[:19] + ' ups problem, muted')
         counter_to_next_alert = counter_to_next_alert + 1
         if counter_to_next_alert > 30:
             alert_bot = True
             
-    if ups_status['pressure_problem'] is False and status_ok is False:
+    if pressure_status['pressure_problem'] is False and status_ok is False:
         print(str(dt.now(pytz.timezone('Australia/Melbourne')))[:19] + ' power on, sending ok')
         result = pressure_send_error(client)
         status_ok = True
