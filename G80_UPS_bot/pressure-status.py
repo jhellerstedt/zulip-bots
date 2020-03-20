@@ -58,7 +58,7 @@ def get_pressure_status():
         pressure_status['pressure_problem'] = True
     if pressure_dict['prep_pressure'] > 5e-9:
         pressure_status['pressure_problem'] = True
-    if pressure_dict['micro_pressure'] = 5e-10:
+    if pressure_dict['micro_pressure'] > 5e-10:
         pressure_status['pressure_problem'] = True
     
     for ii in pressure_dict:
