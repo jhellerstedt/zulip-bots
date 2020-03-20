@@ -116,6 +116,22 @@ class UPSstatus(object):
                 
             return
             
+        elif command[0] == 'pressure_update_stream':
+            with open(pressure_status_file, 'rb') as f:
+                pressure_dict = pickle.load(f)
+            
+            status_message = ''
+            for ii in pressure_dict:
+                status_message = status_message + '\n* ' + str(ii) + ': ' + str(ups_status[ii]) + ' '
+            
+            msg_dict = dict(
+                            type='stream',
+                            to='spm experiments',
+                            subject='pressure status',
+                            content=status_message,
+                            )
+            bot_handler.send_message(msg_dict)
+            
             
         
         elif command[0] == 'status' or command[0] == 'Status':            
