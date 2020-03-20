@@ -43,7 +43,7 @@ class UPSstatus(object):
                 '\n* `@ups-bot unsubscribe`: stop receiving @ notifications of problems'
                 '\n* `@ups-bot mute <int>`: stop error notifications for <int> minutes; default 30 (no value given)'
                 '\n* `@ups-bot pressure`: returns current pressure values'
-                '\n* `@ups-pot mute-pressure`: toggle pressure error reporting'
+                '\n* `@ups-bot mute-pressure`: toggle pressure error reporting'
                 )
         
         original_content = message['content'].strip()
@@ -69,7 +69,7 @@ class UPSstatus(object):
             
             status_message = ''
             for ii in pressure_dict:
-                status_message = status_message + '\n*' + str(ii) + ': ' + str(pressure_dict[ii]) + ' '
+                status_message = status_message + '\n* ' + str(ii) + ': ' + str(pressure_dict[ii]) + ' '
             
             bot_handler.send_reply(message, status_message)
             
