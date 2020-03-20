@@ -20,10 +20,10 @@ from splinter import Browser
 
 import zulip
 
-ups_status_file = '/home/jack/zulip_bots/ups_bot/ups_status.p'
+ups_status_file = '/home/jack/zulip-bots/G80_UPS_bot/ups_status.p'
 
 ## second python bot to send a message to ups-bot, so its not self-sending
-zulip_config_file = '/home/jack/zulip_bots/ups_bot/python-zuliprc'
+zulip_config_file = '/home/jack/zulip-bots/G80_UPS_bot/python-zuliprc'
 # zulip_config_file = os.getcwd() + '/zuliprc'
 # ups_status_file = os.getcwd() + '/ups_status.p'
 

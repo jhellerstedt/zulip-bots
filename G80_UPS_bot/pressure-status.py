@@ -20,10 +20,10 @@ import pytz
 import zulip
 
 current_pressure_path = '/home/jack/instrument-IO/G80_pressure_logging/current_pressure.p'
-pressure_status_file = '/home/jack/zulip_bots/G80_UPS_bot/pressure_status.p'
+pressure_status_file = '/home/jack/zulip-bots/G80_UPS_bot/pressure_status.p'
 
 ## second python bot to send a message to ups-bot, so its not self-sending
-zulip_config_file = '/home/jack/zulip_bots/ups_bot/python-zuliprc'
+zulip_config_file = '/home/jack/zulip-bots/G80_UPS_bot/python-zuliprc'
 # zulip_config_file = os.getcwd() + '/zuliprc'
 # ups_status_file = os.getcwd() + '/ups_status.p'
 

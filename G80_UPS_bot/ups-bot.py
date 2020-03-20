@@ -16,11 +16,11 @@ from datetime import datetime, timedelta
 import pytz
 
 
-ups_status_file = '/home/jack/zulip_bots/ups_bot/ups_status.p'
+ups_status_file = '/home/jack/zulip-bots/G80_UPS_bot/ups_status.p'
 # ups_status_file = os.getcwd() + '/ups_status.p'
 
 ## hard-coded path to current pressure pickle:
-pressure_status_file = '/home/jack/zulip_bots/G80_UPS_bot/pressure_status.p'
+pressure_status_file = '/home/jack/zulip-bots/G80_UPS_bot/pressure_status.p'
 
 class UPSstatus(object):
     '''
