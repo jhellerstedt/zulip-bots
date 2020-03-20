@@ -62,7 +62,7 @@ def get_pressure_status():
         pressure_status['pressure_problem'] = True
     
     for ii in pressure_dict:
-        pressure_status[ii] = pressure_dict[i]
+        pressure_status[ii] = pressure_dict[ii]
         
     return pressure_status
 
