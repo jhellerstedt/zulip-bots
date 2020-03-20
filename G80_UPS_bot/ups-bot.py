@@ -43,6 +43,7 @@ class UPSstatus(object):
                 '\n* `@ups-bot unsubscribe`: stop receiving @ notifications of problems'
                 '\n* `@ups-bot mute <int>`: stop error notifications for <int> minutes; default 30 (no value given)'
                 '\n* `@ups-bot pressure`: returns current pressure values'
+                '\n* `@ups-pot mute-pressure`: toggle pressure error reporting'
                 )
         
         original_content = message['content'].strip()
@@ -52,7 +53,16 @@ class UPSstatus(object):
             bot_handler.send_reply(message, HELP_STR)
             return
         
-        ## pressure reporting    
+        ## pressure reporting
+        elif command[0] == 'mute-pressure' or command[0] == 'Mute-pressure':
+            try:
+                bot_handler.storage.put('pressure_muted', not bot_handler.storage.get('pressure_muted'))
+            except:
+                bot_handler.storage.put('pressure_muted', False)
+            
+            status_message = 'notifications on: ' + str(not bot_handler.storage.get('pressure_muted'))
+            bot_handler.send_reply(message, status_message)
+           
         elif command[0] == 'pressure' or command[0] == 'Pressure':
             with open(pressure_status_file, 'rb') as f:
                 pressure_dict = pickle.load(f)
@@ -67,8 +77,21 @@ class UPSstatus(object):
                 muted = datetime.now() < datetime.strptime(bot_handler.storage.get('unmute_time'), "%Y-%m-%d %H:%M:%S")
             except:
                 muted = False
+                
+            ## don't report pressure problems, Mon-Fri, 8am to 7pm
+            hour = datetime.now(pytz.timezone('Australia/Melbourne')).hour
+            weekday = datetime.now(pytz.timezone('Australia/Melbourne')).weekday()
+            pressure_muted = False
+            if hour > 8 and hour < 19 and weekday < 5:
+                pressure_muted = True
+                try:
+                    if bot_handler.storage.get('pressure_muted') is False:
+                        pressure_muted = True
+                except:
+                    bot_handler.storage.put('pressure_muted', False)
+                    pressure_muted = True
             
-            if pressure_dict['pressure_problem'] is True and muted is False:
+            if pressure_dict['pressure_problem'] is True and pressure_muted is False and muted = False:
                 msg_dict = dict(
                     type='stream',
                     to='spm experiments',
@@ -94,7 +117,7 @@ class UPSstatus(object):
             except:
                 bot_handler.storage.put('error_reported', False)
             
-            if ups_status['ups_problem'] is False and bot_handler.storage.get('error_reported') is True:
+            if pressure_dict['pressure_problem'] is False and bot_handler.storage.get('error_reported') is True:
                 msg_dict = dict(
                         type='stream',
                         to='spm experiments',
@@ -115,6 +138,7 @@ class UPSstatus(object):
                 bot_handler.storage.put('error_reported', False)
                 
             return
+        
             
         elif command[0] == 'pressure_update_stream':
             with open(pressure_status_file, 'rb') as f:
