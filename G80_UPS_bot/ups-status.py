@@ -21,8 +21,6 @@ from splinter import Browser
 import zulip
 
 ups_status_file = '/home/jack/zulip_bots/ups_bot/ups_status.p'
-current_pressure_path = '/home/jack/instrument-IO/G80_pressure_logging/current_pressure.p'
-pressure_status_file = '/home/jack/zulip_bots/G80_UPS_bot/pressure_status.p'
 
 ## second python bot to send a message to ups-bot, so its not self-sending
 zulip_config_file = '/home/jack/zulip_bots/ups_bot/python-zuliprc'
@@ -84,47 +82,6 @@ def get_status_dict(browser):
             
         
     return ups_status
-    
-def get_pressure_status():
-    with open(current_pressure_path, 'rb') as f:
-        pressure_dict = pickle.load(f)
-    
-    pressure_status = {}
-    pressure_status['pressure_problem'] = False
-    pressure_status['timestamp'] = str(dt.now(pytz.timezone('Australia/Melbourne')))[:19]
-    
-    ## define error conditions for reporting here
-    if pressure_dict['LL_pressure'] > 1.3:
-        pressure_status['pressure_problem'] = True
-    if pressure_dict['prep_pressure'] > 5e-9:
-        pressure_status['pressure_problem'] = True
-    if pressure_dict['micro_pressure'] = 5e-10:
-        pressure_status['pressure_problem'] = True
-    
-    for ii in pressure_dict:
-        pressure_status[ii] = pressure_dict[i]
-    
-    with open(pressure_status_file, 'wb') as f:
-        pickle.dump(pressure_status, f)
-
-
-def pressure_send_error(client):
-    msg = {
-        'type': 'private',
-        'to': ups_bot_address,
-        'content': 'pressure'
-    }
-    result = client.send_message(msg)
-    
-    return result
-    
-def pressure_stream_update(client):
-    msg = {
-        'type': 'private',
-        'to': ups_bot_address,
-        'content': 'pressure_update_stream'
-    }
-    result = client.send_message(msg)
     
 def send_error_msg(client):
     msg = {
@@ -246,6 +203,7 @@ while True:
         except:
             page_loaded = False
             print('restart failed')
-        
+            
+     
     
     time.sleep(15)
