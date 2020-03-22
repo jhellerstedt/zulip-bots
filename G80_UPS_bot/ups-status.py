@@ -6,8 +6,6 @@ Created on Thu Jan 24 11:08:43 2019
 @author: jack
 """
 
-import os
-
 import atexit
 
 import time
@@ -24,8 +22,6 @@ ups_status_file = '/home/jack/zulip-bots/G80_UPS_bot/ups_status.p'
 
 ## second python bot to send a message to ups-bot, so its not self-sending
 zulip_config_file = '/home/jack/zulip-bots/G80_UPS_bot/python-zuliprc'
-# zulip_config_file = os.getcwd() + '/zuliprc'
-# ups_status_file = os.getcwd() + '/ups_status.p'
 
 client = zulip.Client(config_file=str(zulip_config_file))
 
