@@ -91,7 +91,7 @@ class UPSstatus(object):
                     bot_handler.storage.put('pressure_muted', False)
                     pressure_muted = True
             
-            if pressure_dict['pressure_problem'] is True and pressure_muted is False and muted is False:
+            if pressure_dict['pressure_problem'] is True and (pressure_muted is False or muted is False):
                 msg_dict = dict(
                     type='stream',
                     to='spm experiments',
@@ -146,7 +146,7 @@ class UPSstatus(object):
             
             status_message = ''
             for ii in pressure_dict:
-                status_message = status_message + '\n* ' + str(ii) + ': ' + str(ups_status[ii]) + ' '
+                status_message = status_message + '\n* ' + str(ii) + ': ' + str(pressure_dict[ii]) + ' '
             
             msg_dict = dict(
                             type='stream',
