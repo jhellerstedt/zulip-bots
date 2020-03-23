@@ -91,7 +91,7 @@ class UPSstatus(object):
                     bot_handler.storage.put('pressure_muted', False)
                     pressure_muted = True
             
-            if pressure_dict['pressure_problem'] is True and (pressure_muted is False or muted is False):
+            if pressure_dict['pressure_problem'] is True and not (pressure_muted is True or muted is True):
                 msg_dict = dict(
                     type='stream',
                     to='spm experiments',
