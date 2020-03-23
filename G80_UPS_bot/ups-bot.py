@@ -91,25 +91,26 @@ class UPSstatus(object):
                     bot_handler.storage.put('pressure_muted', False)
                     pressure_muted = True
             
-            if pressure_dict['pressure_problem'] is True and not (pressure_muted is True or muted is True):
-                msg_dict = dict(
-                    type='stream',
-                    to='spm experiments',
-                    subject='pressure status',
-                    content=status_message,
-                )
-                bot_handler.send_message(msg_dict)
-                
-                for subscriber in bot_handler.storage.get('subscribers'):
+            if pressure_dict['pressure_problem'] is True and muted is False:
+                if pressure_muted is False:
                     msg_dict = dict(
-                        type='private',
-                        to=subscriber,
-                        subject='pressure problem',
+                        type='stream',
+                        to='spm experiments',
+                        subject='pressure status',
                         content=status_message,
-                        )
+                    )
                     bot_handler.send_message(msg_dict)
-                
-                bot_handler.storage.put('error_reported', True)
+                    
+                    for subscriber in bot_handler.storage.get('subscribers'):
+                        msg_dict = dict(
+                            type='private',
+                            to=subscriber,
+                            subject='pressure problem',
+                            content=status_message,
+                            )
+                        bot_handler.send_message(msg_dict)
+                    
+                    bot_handler.storage.put('error_reported', True)
             
             ## all clear message, if problem resolves itself
             try:
