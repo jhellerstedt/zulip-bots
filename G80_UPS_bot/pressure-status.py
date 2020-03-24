@@ -88,16 +88,26 @@ tries = 0
 alert_bot = True
 counter_to_next_alert = 0
 status_ok = False
+waited_five = False
 
 daily_update_time = dt.now() - datetime.timedelta(days=1)
+
+five_minute_wait = dt.now()
 
 while True:
     pressure_status = get_pressure_status()
     
     with open(pressure_status_file, 'wb') as f:
         pickle.dump(pressure_status, f)
+        
+    if pressure_status['pressure_problem'] is True and alert_bot is True and waited_five is False:
+        if status_ok is True:
+            five_minute_wait = dt.now()
+        if dt.now() - five_minute_wait > datetime.timedelta(minutes=5):
+            status_ok = False
+            waited_five = True
 
-    if pressure_status['pressure_problem'] is True and alert_bot is True:
+    if pressure_status['pressure_problem'] is True and alert_bot is True and waited_five is True:
         print(str(dt.now(pytz.timezone('Australia/Melbourne')))[:19] + ' pressure_problem, sending alert message')
         result = pressure_send_error(client)
         print(result)
