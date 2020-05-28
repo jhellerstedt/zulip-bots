@@ -83,8 +83,6 @@ def pressure_stream_update(client):
     return result
 
 
-
-tries = 0
 alert_bot = True
 counter_to_next_alert = 0
 status_ok = False
