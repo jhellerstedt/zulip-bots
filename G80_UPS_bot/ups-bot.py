@@ -64,6 +64,7 @@ class UPSstatus(object):
             
             status_message = 'notifications on: ' + str(not bot_handler.storage.get('pressure_muted'))
             bot_handler.send_reply(message, status_message)
+            return
         
         
         elif command[0] == 'bakeout' or command[0] == 'Bakeout':
@@ -74,17 +75,15 @@ class UPSstatus(object):
             
             bakeout_finish_time = str(datetime.now() + timedelta(hours=bakeout_time))[:19]
             bot_handler.storage.put('bakeout_finish_time', bakeout_finish_time)
+            AEDT_bakeout_finish_time = str(datetime.now(pytz.timezone('Australia/Melbourne')) + timedelta(hours=bakeout_time))[:19]
+            reply_msg = 'bakeout until: ' + AEDT_bakeout_finish_time
+            bot_handler.send_reply(message, reply_msg)
+            return
             
            
         elif command[0] == 'pressure' or command[0] == 'Pressure':
             with open(pressure_status_file, 'rb') as f:
                 pressure_dict = pickle.load(f)
-            
-            status_message = ''
-            for ii in pressure_dict:
-                status_message = status_message + '\n* ' + str(ii) + ': ' + str(pressure_dict[ii]) + ' '
-            
-            bot_handler.send_reply(message, status_message)
             
             try:
                 muted = datetime.now() < datetime.strptime(bot_handler.storage.get('unmute_time'), "%Y-%m-%d %H:%M:%S")
@@ -116,7 +115,14 @@ class UPSstatus(object):
             ## set problem to false if muted:
             if pressure_muted is True or muted is True:
                 pressure_dict['pressure_problem'] = False
+                
+            ## compose status message from dict with modified pressure_problem boolean
+            status_message = ''
+            for ii in pressure_dict:
+                status_message = status_message + '\n* ' + str(ii) + ': ' + str(pressure_dict[ii]) + ' '
             
+            ## send reply to sender of status request
+            bot_handler.send_reply(message, status_message)
             
             ## report problems to stream and subscribers if un-muted:
             if pressure_dict['pressure_problem'] is True and muted is False:
@@ -184,6 +190,8 @@ class UPSstatus(object):
                             content=status_message,
                             )
             bot_handler.send_message(msg_dict)
+            
+            return
             
             
         
@@ -271,6 +279,7 @@ class UPSstatus(object):
             except:
                 reply_message = 'no subscribers list'
             bot_handler.send_reply(message, reply_message)
+            return
             
         elif command[0] == 'unsubscribe' or command[0] == 'Unsubscribe':
             try:
@@ -313,6 +322,7 @@ class UPSstatus(object):
                             content=status_message,
                             )
             bot_handler.send_message(msg_dict)
+            return
         
         else:
             bot_handler.send_reply(message, HELP_STR)
