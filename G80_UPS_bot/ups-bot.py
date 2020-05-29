@@ -233,6 +233,16 @@ class UPSstatus(object):
             bot_handler.storage.put('subscribers', subscribers)
             bot_handler.send_reply(message, 'successfully subscribed')
             return
+        
+        elif command[0] == 'list_subscribers' or command[0] == 'List_subscribers':
+            try:
+                subscribers = bot_handler.storage.get('subscribers')
+                reply_message = ''
+                for ii in subscribers:
+                    reply_message = reply_message + str(ii) + '\n'
+            except:
+                reply_message = 'no subscribers list'
+            bot_handler.send_reply(message, reply_message)
             
         elif command[0] == 'unsubscribe' or command[0] == 'Unsubscribe':
             try:
