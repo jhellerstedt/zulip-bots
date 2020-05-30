@@ -51,6 +51,8 @@ class UPSstatus(object):
         original_content = message['content'].strip()
         command = original_content.split()
         
+        bakeout_pressure_threshold = 3E-6
+        
         if command[0] == 'help' or command[0] == 'Help':
             bot_handler.send_reply(message, HELP_STR)
             return
@@ -65,7 +67,6 @@ class UPSstatus(object):
             status_message = 'notifications on: ' + str(not bot_handler.storage.get('pressure_muted'))
             bot_handler.send_reply(message, status_message)
             return
-        
         
         elif command[0] == 'bakeout' or command[0] == 'Bakeout':
             try:
@@ -96,8 +97,9 @@ class UPSstatus(object):
             except:
                 baking = False
             if baking is True:
-                if pressure_dict['prep_pressure'] < 3E-6: ## prep pressure threshold
+                if pressure_dict['prep_pressure'] < bakeout_pressure_threshold: ## prep pressure threshold
                     pressure_dict['pressure_problem'] = False
+                    pressure_dict['baking'] = True
                 
             ## don't report pressure problems, Mon-Fri, 8am to 7pm
             hour = datetime.now(pytz.timezone('Australia/Melbourne')).hour
@@ -178,6 +180,16 @@ class UPSstatus(object):
         elif command[0] == 'pressure_update_stream':
             with open(pressure_status_file, 'rb') as f:
                 pressure_dict = pickle.load(f)
+            
+            ## bakeout condition: set problem to false for higher pressure threshold
+            try:
+                baking = datetime.now() < datetime.strptime(bot_handler.get('bakeout_finish_time'), "%Y-%m-%d %H:%M:%S")
+            except:
+                baking = False
+            if baking is True:
+                if pressure_dict['prep_pressure'] < bakeout_pressure_threshold: ## prep pressure threshold
+                    pressure_dict['pressure_problem'] = False
+                    pressure_dict['baking'] = True
             
             status_message = ''
             for ii in pressure_dict:
