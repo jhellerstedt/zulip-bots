@@ -49,8 +49,8 @@ def get_pressure_status():
     pressure_status['timestamp'] = str(dt.now(pytz.timezone('Australia/Melbourne')))[:19]
     
     ## define error conditions for reporting here
-    if pressure_dict['LL_pressure'] > 4.5:
-        pressure_status['pressure_problem'] = True
+#    if pressure_dict['LL_pressure'] > 4.5:
+#        pressure_status['pressure_problem'] = True
     if pressure_dict['prep_pressure'] > 5e-9:
         pressure_status['pressure_problem'] = True
     if pressure_dict['micro_pressure'] > 5e-9:
