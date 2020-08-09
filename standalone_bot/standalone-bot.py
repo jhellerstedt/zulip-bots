@@ -93,6 +93,7 @@ class PressureStatus(object):
                 baking = datetime.now() < datetime.strptime(bot_handler.get('bakeout_finish_time'), "%Y-%m-%d %H:%M:%S")
             except:
                 baking = False
+            
             if baking is True:
                 if pressure_dict['prep_pressure'] < bakeout_pressure_threshold: ## prep pressure threshold
                     pressure_dict['pressure_problem'] = False
@@ -128,7 +129,7 @@ class PressureStatus(object):
                 if pressure_muted is False:
                     msg_dict = dict(
                         type='stream',
-                        to='spm experiments',
+                        to='G81 standalone',
                         subject='pressure status',
                         content=status_message,
                     )
@@ -147,14 +148,15 @@ class PressureStatus(object):
             
             ## all clear message to stream and subscribers, if problem resolves itself
             try:
-                answer = bot_handler.storage.get('error_reported')
+                error_reported = bot_handler.storage.get('error_reported')
             except:
                 bot_handler.storage.put('error_reported', False)
+                error_reported = False
             
-            if pressure_dict['pressure_problem'] is False and bot_handler.storage.get('error_reported') is True:
+            if pressure_dict['pressure_problem'] is False and error_reported is True:
                 msg_dict = dict(
                         type='stream',
-                        to='spm experiments',
+                        to='G81 standalone',
                         subject='pressure status',
                         content=status_message,
                         )
@@ -194,7 +196,7 @@ class PressureStatus(object):
             
             msg_dict = dict(
                             type='stream',
-                            to='G81 experiments',
+                            to='G81 standalone',
                             subject='pressure status',
                             content=status_message,
                             )
