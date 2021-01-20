@@ -167,7 +167,7 @@ while True:
     
     if ups_status['ups_problem'] is True and alert_bot is False:
         print(str(dt.now(pytz.timezone('Australia/Melbourne')))[:19] + ' ups problem, muted')
-        counter_to_next_alert = counter_to_next_alert + 1
+        counter_to_next_alert += 1
         if counter_to_next_alert > 30:
             alert_bot = True
             
@@ -175,6 +175,9 @@ while True:
         print(str(dt.now(pytz.timezone('Australia/Melbourne')))[:19] + ' power on, sending ok')
         result = send_error_msg(client)
         status_ok = True
+        ## reset error reporting to trigger again
+        alert_bot = True
+        counter_to_next_alert = 0
         
     if ups_status['warning'] == 'site unreachable' or ups_status['upsMode'] == '---':
         page_loaded = False
