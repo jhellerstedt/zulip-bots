@@ -131,7 +131,7 @@ class UPSstatus(object):
                 if pressure_muted is False:
                     msg_dict = dict(
                         type='stream',
-                        to='spm experiments',
+                        to='G80 spm experiments',
                         subject='pressure status',
                         content=status_message,
                     )
@@ -157,7 +157,7 @@ class UPSstatus(object):
             if pressure_dict['pressure_problem'] is False and bot_handler.storage.get('error_reported') is True:
                 msg_dict = dict(
                         type='stream',
-                        to='spm experiments',
+                        to='G80 spm experiments',
                         subject='pressure status',
                         content=status_message,
                         )
@@ -197,7 +197,7 @@ class UPSstatus(object):
             
             msg_dict = dict(
                             type='stream',
-                            to='spm experiments',
+                            to='G80 spm experiments',
                             subject='pressure status',
                             content=status_message,
                             )
@@ -226,7 +226,7 @@ class UPSstatus(object):
             if ups_status['ups_problem'] is True and muted is False:
                 msg_dict = dict(
                         type='stream',
-                        to='spm experiments',
+                        to='G80 spm experiments',
                         subject='ups status',
                         content=status_message,
                         )
@@ -252,7 +252,7 @@ class UPSstatus(object):
             if ups_status['ups_problem'] is False and bot_handler.storage.get('error_reported') is True:
                 msg_dict = dict(
                         type='stream',
-                        to='spm experiments',
+                        to='G80 spm experiments',
                         subject='ups status',
                         content=status_message,
                         )
@@ -329,7 +329,7 @@ class UPSstatus(object):
             
             msg_dict = dict(
                             type='stream',
-                            to='spm experiments',
+                            to='G80 spm experiments',
                             subject='ups status',
                             content=status_message,
                             )
