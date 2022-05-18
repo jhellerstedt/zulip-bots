@@ -26,7 +26,7 @@ client = zulip.Client(config_file=str(zulip_config_file))
 
 
 ## address to send message to, .e.g., ups-bot
-ups_bot_address = 'ups-bot-bot@nedchat.imipolex.biz'
+ups_bot_address = 'ups-bot-bot@zulip.schiffrin-zulip.cloud.edu.au'
 
 with open(zulip_config_file) as f:
     d = f.readline() # just the [api] bit
