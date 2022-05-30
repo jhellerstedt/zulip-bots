@@ -25,7 +25,7 @@ with open('config.ini', 'r') as f:
     pressure_status_file = config.split('pressure_status_file=')[1].split('\n')[0]
     
     zulip_config_file = config.split('zulip_config_file=')[1].split('\n')[0]
-    ups_bot_address = config.split('ups_bot_addres=')[1].split('\n')[0]
+    ups_bot_address = config.split('ups_bot_address=')[1].split('\n')[0]
     ups_status_file = config.split('ups_status_file=')[1].split('\n')[0]
     
 

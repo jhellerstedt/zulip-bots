@@ -26,7 +26,7 @@ with open('config.ini', 'r') as f:
     pressure_status_file = config.split('pressure_status_file=')[1].split('\n')[0]
     
     zulip_config_file = config.split('zulip_config_file=')[1].split('\n')[0]
-    ups_bot_address = config.split('ups_bot_addres=')[1].split('\n')[0]
+    ups_bot_address = config.split('ups_bot_address=')[1].split('\n')[0]
 
 # current_pressure_path = '/home/jack/instrument-IO/G80_pressure_logging/current_pressure.p'
 # pressure_status_file = '/home/jack/zulip-bots/G80_UPS_bot/pressure_status.p'
