@@ -2,3 +2,4 @@
 zuliprc
 python-zuliprc
 *.p
+config.ini

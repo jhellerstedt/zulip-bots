@@ -16,11 +16,24 @@ from datetime import datetime, timedelta
 import pytz
 
 
-ups_status_file = '/home/jack/zulip-bots/G80_UPS_bot/ups_status.p'
+## read in config settings
+with open('config.ini', 'r') as f:
+    config = f.read()
+    current_pressure_path = config.split('current_pressure_path=')[1].split('\n')[0]
+    current_temperature_path = config.split('current_temperature_path=')[1].split('\n')[0]
+    
+    pressure_status_file = config.split('pressure_status_file=')[1].split('\n')[0]
+    
+    zulip_config_file = config.split('zulip_config_file=')[1].split('\n')[0]
+    ups_bot_address = config.split('ups_bot_address=')[1].split('\n')[0]
+    ups_status_file = config.split('ups_status_file=')[1].split('\n')[0]
+    
+
+# ups_status_file = '/home/jack/zulip-bots/G80_UPS_bot/ups_status.p'
 # ups_status_file = os.getcwd() + '/ups_status.p'
 
 ## hard-coded path to current pressure pickle:
-pressure_status_file = '/home/jack/zulip-bots/G80_UPS_bot/pressure_status.p'
+# pressure_status_file = '/home/jack/zulip-bots/G80_UPS_bot/pressure_status.p'
 
 class UPSstatus(object):
     '''
