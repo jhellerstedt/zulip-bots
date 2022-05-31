@@ -6,6 +6,7 @@ Created on Thu Jan 24 11:08:43 2019
 @author: jack
 """
 
+# import os
 import time
 import pickle
 
@@ -15,18 +16,30 @@ import pytz
 
 import zulip
 
-current_pressure_path = '/home/jack/instrument-IO/G80_pressure_logging/current_pressure.p'
-pressure_status_file = '/home/jack/zulip-bots/G80_UPS_bot/pressure_status.p'
+
+## read in config settings
+with open('config.ini', 'r') as f:
+    config = f.read()
+    current_pressure_path = config.split('current_pressure_path=')[1].split('\n')[0]
+    current_temperature_path = config.split('current_temperature_path=')[1].split('\n')[0]
+    
+    pressure_status_file = config.split('pressure_status_file=')[1].split('\n')[0]
+    
+    zulip_config_file = config.split('zulip_config_file=')[1].split('\n')[0]
+    ups_bot_address = config.split('ups_bot_address=')[1].split('\n')[0]
+
+# current_pressure_path = '/home/jack/instrument-IO/G80_pressure_logging/current_pressure.p'
+# pressure_status_file = '/home/jack/zulip-bots/G80_UPS_bot/pressure_status.p'
 
 ## second python bot to send a message to ups-bot, so its not self-sending
-zulip_config_file = '/home/jack/zulip-bots/G80_UPS_bot/python-zuliprc'
+# zulip_config_file = '/home/jack/zulip-bots/G80_UPS_bot/python-zuliprc'
 
 
 client = zulip.Client(config_file=str(zulip_config_file))
 
 
 ## address to send message to, .e.g., ups-bot
-ups_bot_address = 'ups-bot-bot@zulip.schiffrin-zulip.cloud.edu.au'
+# ups_bot_address = 'ups-bot-bot@zulip.schiffrin-zulip.cloud.edu.au'
 
 with open(zulip_config_file) as f:
     d = f.readline() # just the [api] bit
@@ -58,6 +71,12 @@ def get_pressure_status():
     
     for ii in pressure_dict:
         pressure_status[ii] = pressure_dict[ii]
+        
+    ## add in microscope temperatures
+    with open(current_temperature_path, 'rb') as f:
+        temperature_dict = pickle.load(f)
+    for ii in temperature_dict:
+        pressure_status[ii] = temperature_dict[ii]
         
     return pressure_status
 
